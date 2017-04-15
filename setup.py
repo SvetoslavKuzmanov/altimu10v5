@@ -1,5 +1,5 @@
 '''
-altimu10v5: A Python module for accessing the Pololu AltIMU-10 v5 inertial measurement unit on a Raspberry Pi.
+AltIMU-10 v5 library for Raspberry Pi.
 
 Copyright 2017, Svetoslav Kuzmanov.
 Licensed under MIT.
@@ -11,7 +11,7 @@ version = "0.1"
 
 setup(name="altimu10v5",
       version=version,
-      description="A Python module for accessing the Pololu AltIMU-10 v5 inertial measurement unit on a Raspberry Pi.",
+      description="AltIMU-10 v5 library for Raspberry Pi",
       long_description=open("README.rst").read(),
       classifiers=[ # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 2 - Pre-Alpha',
