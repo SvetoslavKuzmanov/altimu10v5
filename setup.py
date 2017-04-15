@@ -25,5 +25,5 @@ setup(name="altimu10v5",
       packages=['altimu10v5'],
       include_package_data=True,
       zip_safe=False,
-      install_requires=['smbus-cffi']
+      install_requires=['smbus']
 )
