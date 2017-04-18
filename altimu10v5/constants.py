@@ -35,6 +35,21 @@ LSM6DS33_OUTY_H_XL = 0x2B  # Accelerometer roll axis (Y) output, high byte
 LSM6DS33_OUTZ_L_XL = 0x2C  # Accelerometer yaw axis (Z) output, low byte
 LSM6DS33_OUTZ_H_XL = 0x2D  # Accelerometer yaw axis (Z) output, high byte
 
+# Control registers for magnetometer
+# Enable device, set operating modes and rates for X and Y axes
+LIS3MDL_CTRL_REG1 = 0x20
+LIS3MDL_CTRL_REG2 = 0x21   # Set gauss scale
+LIS3MDL_CTRL_REG3 = 0x22   # Set operating/power modes
+LIS3MDL_CTRL_REG4 = 0x23   # Set operating mode and rate for Z-axis
+
+# Output registers for magnetometer
+LIS3MDL_OUT_X_L = 0x28   # X output, low byte
+LIS3MDL_OUT_X_H = 0x29   # X output, high byte
+LIS3MDL_OUT_Y_L = 0x2A   # Y output, low byte
+LIS3MDL_OUT_Y_H = 0x2B   # Y output, high byte
+LIS3MDL_OUT_Z_L = 0x2C   # Z output, low byte
+LIS3MDL_OUT_Z_H = 0x2D   # Z output, high byte
+
 # Gyroscope dps/LSB for 1000 dps full scale
 GYRO_GAIN = 35.0
 
