@@ -11,9 +11,9 @@ class I2C(object):
     """ Class to set up and access I2C devices.
     """
 
-    def __init__(self, busId=1):
+    def __init__(self, bus_id=1):
         """ Initialize the I2C bus. """
-        self._i2c = SMBus(busId)
+        self._i2c = SMBus(bus_id)
 
     def __del__(self):
         """ Clean up. """
@@ -38,7 +38,18 @@ class I2C(object):
         """ Combine low and high bytes to an unsigned 16 bit value. """
         return (hi_byte << 8) | lo_byte
 
-    def combine_signed_lo_hi(self, loByte, hiByte):
+    def combine_signed_lo_hi(self, lo_byte, hi_byte):
         """ Combine low and high bytes to a signed 16 bit value. """
-        combined = self.combine_lo_hi(loByte, hiByte)
+        combined = self.combine_lo_hi(lo_byte, hi_byte)
         return combined if combined < 32768 else (combined - 65536)
+
+    def combine_xlo_lo_hi(self, xlo_byte, lo_byte, hi_byte):
+        """ Combine extra low, low, and high bytes to an unsigned
+            24 bit value.
+        """
+        return (xlo_byte | lo_byte << 8 | hi_byte << 16)
+
+    def combine_signed_xlo_lo_hi(self, xlo_byte, lo_byte, hi_byte):
+        """ Combine extra low, low, and high bytes to a signed 24 bit value. """
+        combined = self.combine_xlo_lo_hi(xlo_byte, lo_byte, hi_byte)
+        return combined if combined < 8388608 else (combined - 16777216)

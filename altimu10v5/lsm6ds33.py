@@ -39,11 +39,11 @@ class LSM6DS33(I2C):
         LSM6DS33_OUTZ_H_XL,  # high byte of Z value
     ]
 
-    def __init__(self, busId=1):
+    def __init__(self, bus_id=1):
         """ Set up I2C connection and initialize some flags and values.
         """
 
-        super(LSM6DS33, self).__init__(busId)
+        super(LSM6DS33, self).__init__(bus_id)
         self.is_accel_enabled = False
         self.is_gyro_enabled = False
 
