@@ -10,6 +10,7 @@ The datasheet for the LSM6DS33 is available at
 [https://www.pololu.com/file/download/LSM6DS33.pdf?file_id=0J1087]
 """
 
+import math
 from i2c import I2C
 from time import sleep
 from constants import *
@@ -50,6 +51,9 @@ class LSM6DS33(I2C):
         self.is_gyro_calibrated = False
         self.gyro_cal = [0, 0, 0]
 
+        self.is_accel_calibrated = False
+        self.accel_angle_cal = [0, 0]
+
     def __del__(self):
         """ Clean up."""
         try:
@@ -84,14 +88,23 @@ class LSM6DS33(I2C):
 
         for i in range(iterations):
             gyro_raw = self.get_gyroscope_raw()
+            accel_angles = self.get_accelerometer_angles()
+
             self.gyro_cal[0] += gyro_raw[0]
             self.gyro_cal[1] += gyro_raw[1]
             self.gyro_cal[2] += gyro_raw[2]
+
+            self.accel_angle_cal[0] += accel_angles[0]
+            self.accel_angle_cal[1] += accel_angles[1]
+
             sleep(0.004)
 
         self.gyro_cal[0] /= iterations
         self.gyro_cal[1] /= iterations
         self.gyro_cal[2] /= iterations
+
+        self.accel_angle_cal[0] /= iterations
+        self.accel_angle_cal[1] /= iterations
 
         print('Calibration Done')
 
@@ -153,3 +166,31 @@ class LSM6DS33(I2C):
         z_val = (z_val * ACCEL_CONVERSION_FACTOR) / 1000
 
         return [x_val, y_val, z_val]
+
+    def get_accelerometer_angles(self, round_digits=0):
+        """ Return a 2D vector of roll and pitch angles,
+            based on accelerometer g forces
+        """
+
+        # Get raw accelerometer g forces
+        [acc_xg_force, acc_yg_force, acc_zg_force] = self.get_accelerometer_g_forces()
+
+        # Calculate angles
+        xz_dist = self._get_dist(acc_xg_force, acc_zg_force)
+        yz_dist = self._get_dist(acc_yg_force, acc_zg_force)
+        accel_roll_angle = math.degrees(math.atan2(acc_yg_force, xz_dist))
+        accel_pitch_angle = -math.degrees(math.atan2(acc_xg_force, yz_dist))
+
+        if self.is_accel_calibrated:
+            accel_roll_angle = accel_roll_angle - self.accel_angle_cal[0]
+            accel_pitch_angle = accel_pitch_angle - self.accel_angle_cal[1]
+            if round != 0:
+                return [round(accel_roll_angle, round_digits), round(accel_pitch_angle, round_digits)]
+            else:
+                return [accel_roll_angle, accel_pitch_angle]
+
+        else:
+            return [accel_roll_angle, accel_pitch_angle]
+
+    def _get_dist(self, a, b):
+        return math.sqrt((a * a) + (b * b))
