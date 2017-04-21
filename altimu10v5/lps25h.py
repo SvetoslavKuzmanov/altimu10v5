@@ -57,10 +57,4 @@ class LPS25H(I2C):
         if not self.is_barometer_enabled:
             raise(Exception('Barometer is not enabled'))
 
-        # Return sensor data as signed 24 bit value
-        lowest_byte = self.read_register(
-            LPS25H_ADDR, self.barometer_registers[0])
-        low_byte = self.read_register(LPS25H_ADDR, self.barometer_registers[1])
-        hi_byte = self.read_register(LPS25H_ADDR, self.barometer_registers[2])
-
-        return self.combine_signed_xlo_lo_hi(lowest_byte, low_byte, hi_byte)
+        return self.read_1d_sensor(LPS25H_ADDR, self.barometer_registers)

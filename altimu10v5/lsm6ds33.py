@@ -102,19 +102,7 @@ class LSM6DS33(I2C):
         if not self.is_gyro_enabled:
             raise(Exception('Gyroscope is not enabled!'))
 
-        # Read register outputs and combine low and high byte values
-        x_low = self.read_register(LSM6DS33_ADDR, self.gyro_registers[0])
-        x_hi = self.read_register(LSM6DS33_ADDR, self.gyro_registers[1])
-        y_low = self.read_register(LSM6DS33_ADDR, self.gyro_registers[2])
-        y_hi = self.read_register(LSM6DS33_ADDR, self.gyro_registers[3])
-        z_low = self.read_register(LSM6DS33_ADDR, self.gyro_registers[4])
-        z_hi = self.read_register(LSM6DS33_ADDR, self.gyro_registers[5])
-
-        x_val = self.combine_signed_lo_hi(x_low, x_hi)
-        y_val = self.combine_signed_lo_hi(y_low, y_hi)
-        z_val = self.combine_signed_lo_hi(z_low, z_hi)
-
-        sensor_data = [x_val, y_val, z_val]
+        sensor_data = self.read_3d_sensor(LSM6DS33_ADDR, self.gyro_registers)
 
         # Return the vector
         if self.is_gyro_calibrated:
@@ -154,20 +142,7 @@ class LSM6DS33(I2C):
         if not self.is_accel_enabled:
             raise(Exception('Accelerometer is not enabled!'))
 
-        # Read register outputs and combine low and high byte values
-        x_low = self.read_register(LSM6DS33_ADDR, self.accel_registers[0])
-        x_hi = self.read_register(LSM6DS33_ADDR, self.accel_registers[1])
-        y_low = self.read_register(LSM6DS33_ADDR, self.accel_registers[2])
-        y_hi = self.read_register(LSM6DS33_ADDR, self.accel_registers[3])
-        z_low = self.read_register(LSM6DS33_ADDR, self.accel_registers[4])
-        z_hi = self.read_register(LSM6DS33_ADDR, self.accel_registers[5])
-
-        x_val = self.combine_signed_lo_hi(x_low, x_hi)
-        y_val = self.combine_signed_lo_hi(y_low, y_hi)
-        z_val = self.combine_signed_lo_hi(z_low, z_hi)
-
-        # Return the vector
-        return [x_val, y_val, z_val]
+        return self.read_3d_sensor(LSM6DS33_ADDR, self.accel_registers)
 
     def get_accelerometer_g_forces(self):
         """ Return a 3D vector of the g forces measured by the accelerometer"""

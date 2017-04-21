@@ -53,3 +53,33 @@ class I2C(object):
         """ Combine extra low, low, and high bytes to a signed 24 bit value. """
         combined = self.combine_xlo_lo_hi(xlo_byte, lo_byte, hi_byte)
         return combined if combined < 8388608 else (combined - 16777216)
+
+    def read_1d_sensor(self, address, registers):
+        """ Return a vector with the combined raw signed 24 bit values
+            of the output registers of a 1d sensor.
+        """
+
+        xlo_byte = self.read_register(address, registers[0])
+        lo_byte = self.read_register(address, registers[1])
+        hi_byte = self.read_register(address, registers[2])
+
+        return self.combine_signed_xlo_lo_hi(xlo_byte, lo_byte, hi_byte)
+
+    def read_3d_sensor(self, address, registers):
+        """ Return a vector with the combined raw signed 16 bit values
+            of the output registers of a 3d sensor.
+        """
+
+        # Read register outputs and combine low and high byte values
+        x_low = self.read_register(address, registers[0])
+        x_hi = self.read_register(address, registers[1])
+        y_low = self.read_register(address, registers[2])
+        y_hi = self.read_register(address, registers[3])
+        z_low = self.read_register(address, registers[4])
+        z_hi = self.read_register(address, registers[5])
+
+        x_val = self.combine_signed_lo_hi(x_low, x_hi)
+        y_val = self.combine_signed_lo_hi(y_low, y_hi)
+        z_val = self.combine_signed_lo_hi(z_low, z_hi)
+
+        return [x_val, y_val, z_val]

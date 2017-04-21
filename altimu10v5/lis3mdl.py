@@ -82,22 +82,4 @@ class LIS3MDL(I2C):
         if not self.is_magnetometer_enabled:
             raise(Exception('Magnetometer is not enabled'))
 
-        # Read register outputs and combine low and high byte values
-        x_low = self.read_register(
-            LIS3MDL_ADDR, self.magnetometer_registers[0])
-        x_hi = self.read_register(LIS3MDL_ADDR, self.magnetometer_registers[1])
-        y_low = self.read_register(
-            LIS3MDL_ADDR, self.magnetometer_registers[2])
-        y_hi = self.read_register(LIS3MDL_ADDR, self.magnetometer_registers[3])
-        z_low = self.read_register(
-            LIS3MDL_ADDR, self.magnetometer_registers[4])
-        z_hi = self.read_register(LIS3MDL_ADDR, self.magnetometer_registers[5])
-
-        x_val = self.combine_signed_lo_hi(x_low, x_hi)
-        y_val = self.combine_signed_lo_hi(y_low, y_hi)
-        z_val = self.combine_signed_lo_hi(z_low, z_hi)
-
-        sensor_data = [x_val, y_val, z_val]
-
-        # Return data
-        return sensor_data
+        return self.read_3d_sensor(LIS3MDL_ADDR, self.magnetometer_registers)
