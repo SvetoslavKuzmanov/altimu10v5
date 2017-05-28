@@ -84,7 +84,7 @@ class LSM6DS33(I2C):
 
     def calibrate(self, iterations=2000):
         """ Calibrate the gyro's raw values."""
-        print('Calibrating...')
+        print('Calibrating Gryo and Accelerometer...')
 
         for i in range(iterations):
             gyro_raw = self.get_gyroscope_raw()
@@ -190,27 +190,6 @@ class LSM6DS33(I2C):
                 return [accel_roll_angle, accel_pitch_angle]
         else:
             return [accel_roll_angle, accel_pitch_angle]
-
-    def get_complementary_angles(self, delta_t=0.05):
-        """ Calculate combined angles of accelerometer and gyroscope
-            using a complementary filter.
-        """
-        self.complementary_angles = [0, 0]
-        complementary_filter_constant = 0.98
-
-        accel_angles = self.get_accelerometer_angles()
-        gyro_angular_velocity = self.get_gyro_angular_velocity()
-
-        self.complementary_angles[0] = complementary_filter_constant                   \
-            * (self.complementary_angles[0] + (gyro_angular_velocity[0] * delta_t))    \
-            + (1 - complementary_filter_constant)                                      \
-            * accel_angles[0]
-        self.complementary_angles[1] = complementary_filter_constant                   \
-            * (self.complementary_angles[1] + (gyro_angular_velocity[1] * delta_t))    \
-            + (1 - complementary_filter_constant)                                      \
-            * accel_angles[1]
-
-        return self.complementary_angles
 
     def _get_dist(self, a, b):
         return math.sqrt((a * a) + (b * b))
